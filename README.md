@@ -2,6 +2,10 @@
 
 A production-grade **Retrieval-Augmented Generation** system that ingests **text, PDFs, images, audio, and video** into a unified vector space. Ask questions across any modality and get streamed AI answers with source citations.
 
+Powered by **Gemini Embedding 2 Preview** — Google's first natively multimodal embedding model (released March 10, 2026).
+
+![Architecture Overview](docs/screenshots/architecture-overview.png)
+
 ![Chat Interface](docs/screenshots/chat-empty.png)
 
 ---
